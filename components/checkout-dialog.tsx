@@ -118,7 +118,7 @@ export function CheckoutDialog({ open, onOpenChange, cartItems, cartTotal }: Che
 
         // 4. Abre o WhatsApp
         // ⚠️ IMPORTANTE: Troque pelo número do dono da hamburgueria (formato internacional sem +)
-        const phoneStore = "5585999999999" 
+        const phoneStore = "5585994108984" 
         const encodedMessage = encodeURIComponent(message)
         const whatsappUrl = `https://wa.me/${phoneStore}?text=${encodedMessage}`
         
