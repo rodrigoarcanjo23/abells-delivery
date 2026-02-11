@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react" // Removi o useEffect que dava erro
+import { useState } from "react" 
 import Image from "next/image"
 import { Product } from "@/types"
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -25,7 +25,7 @@ interface ProductModalProps {
   product: Product | null
   isOpen: boolean
   onClose: () => void
-  onAddToCart: (item: OrderItem) => void // Agora o TypeScript sabe o que entra aqui!
+  onAddToCart: (item: OrderItem) => void 
 }
 
 export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductModalProps) {
@@ -34,10 +34,6 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
   
   // Hook para detectar se é Desktop
   const isDesktop = useMediaQuery("(min-width: 768px)")
-
-  // ⚠️ REMOVI O useEffect DAQUI!
-  // O reset do formulário agora será feito de forma automática pelo React
-  // usando a propriedade "key" lá no page.tsx. É mais limpo e sem erros.
 
   if (!product) return null
 
@@ -84,7 +80,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
     onClose()
   }
 
-  // --- CONTEÚDO VISUAL (Sem alterações na lógica, só visual) ---
+// --- CONTEÚDO VISUAL ---
   const Content = (
     <div className={isDesktop ? "mt-0" : "px-4"}>
       <div className={`relative w-full bg-slate-100 shrink-0 rounded-md overflow-hidden mb-4 ${isDesktop ? 'h-40' : 'h-52'}`}>
@@ -102,7 +98,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             </div>
 
             {group.maxSelection === 1 ? (
-              <RadioGroup onValueChange={(val) => handleSelection(group.id, val, true)}>
+              <RadioGroup onValueChange={(val: string) => handleSelection(group.id, val, true)}>
                 {group.modifiers.map(mod => (
                   <div key={mod.id} className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
                     <div className="flex items-center space-x-3">
@@ -132,7 +128,6 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
       <div className="h-20" />
     </div>
   )
-
   const FooterContent = (
     <div className="flex flex-row items-center justify-between gap-4 w-full">
         <div className="flex items-center border rounded-md bg-white">
@@ -152,13 +147,18 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
     </div>
   )
 
-  if (isDesktop) {
+if (isDesktop) {
     return (
-      <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog 
+        open={isOpen} 
+        onOpenChange={(open: boolean) => { // <-- CORREÇÃO AQUI
+          if (!open) onClose()
+        }}
+      >
         <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{product.name}</DialogTitle>
-            <DialogDescription>{product.description}</DialogDescription>
+            <DialogDescription>{product.description || " "}</DialogDescription>
           </DialogHeader>
           {Content}
           <DialogFooter className="sticky bottom-0 bg-white pt-4 border-t">
@@ -170,11 +170,16 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
   }
 
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Drawer 
+      open={isOpen} 
+      onOpenChange={(open: boolean) => { // <-- CORREÇÃO AQUI TAMBÉM
+        if (!open) onClose()
+      }}
+    >
       <DrawerContent className="max-h-[90vh]">
         <DrawerHeader className="text-left">
           <DrawerTitle>{product.name}</DrawerTitle>
-          <DrawerDescription>{product.description}</DrawerDescription>
+          <DrawerDescription>{product.description || " "}</DrawerDescription>
         </DrawerHeader>
         <ScrollArea className="overflow-y-auto">
           {Content}
